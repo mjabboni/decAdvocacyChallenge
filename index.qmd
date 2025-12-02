@@ -100,6 +100,75 @@ plt.show()
 
 ---
 
+## 3D View: Shop Performance Landscape
+
+Here's an interactive 3D perspective showing all three dimensions at once—Shop ID, your presence status, and cars fixed:
+
+```{python}
+#| fig-cap: "3D visualization: Shop ID × Boss Presence × Cars Fixed"
+#| fig-width: 10
+#| fig-height: 8
+
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Add jitter for better visibility
+np.random.seed(42)
+jitter_x = 0.1
+jitter_y = 0.05
+
+# Create colors based on boss presence
+colors_3d = ['#E67E22' if b == 0 else '#27AE60' for b in carsDF['boss']]
+
+# Add jittered positions
+x_jittered = carsDF['shopID'] + np.random.uniform(-jitter_x, jitter_x, len(carsDF))
+y_jittered = carsDF['boss'] + np.random.uniform(-jitter_y, jitter_y, len(carsDF))
+
+# Create the 3D scatter plot
+scatter = ax.scatter(x_jittered, y_jittered, carsDF['carsFixed'], 
+                     c=colors_3d, s=60, alpha=0.7, edgecolors='white', linewidth=0.5)
+
+# Set labels
+ax.set_xlabel('\nShop ID', fontsize=11, fontweight='bold')
+ax.set_ylabel('\nBoss Presence', fontsize=11, fontweight='bold')
+ax.set_zlabel('\nCars Fixed', fontsize=11, fontweight='bold')
+ax.set_title('3D View: Productivity by Shop and Boss Presence', fontsize=14, fontweight='bold', pad=20)
+
+# Set tick labels
+ax.set_xticks([1, 2, 3, 4, 5])
+ax.set_xticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
+ax.set_yticks([0, 1])
+ax.set_yticklabels(['Away', 'Present'])
+
+# Add mean surfaces/bars for each shop-boss combination
+for shop in range(1, 6):
+    for boss in [0, 1]:
+        mean_cars = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == boss)]['carsFixed'].mean()
+        color = '#E67E22' if boss == 0 else '#27AE60'
+        ax.bar3d(shop - 0.2, boss - 0.1, 0, 0.4, 0.2, mean_cars, 
+                 color=color, alpha=0.3, edgecolor='black', linewidth=0.5)
+
+# Create custom legend
+from matplotlib.lines import Line2D
+legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor='#E67E22', 
+                          markersize=10, label='Boss Away'),
+                   Line2D([0], [0], marker='o', color='w', markerfacecolor='#27AE60', 
+                          markersize=10, label='Boss Present')]
+ax.legend(handles=legend_elements, loc='upper left', fontsize=10)
+
+# Adjust view angle for better visualization
+ax.view_init(elev=20, azim=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+**Reading this 3D chart:** The vertical bars show the average cars fixed for each shop-boss combination, while the scattered dots are individual daily observations. Notice how Shop 1 and Shop 4 show the biggest vertical gaps between the orange (away) and green (present) bars—that's your impact visualized in 3D space.
+
+---
+
 ## The "Boss Boost" Effect
 
 Here's the real question: **How many extra cars get fixed when you're at each shop?**
@@ -387,13 +456,21 @@ plt.show()
 
 **Patrick, here's what you need to remember:**
 
-1. **Your presence matters—but not equally everywhere.** Shop 1 and Shop 4 see the biggest boost when you're there.
+Question 1. **Your presence matters—but not equally everywhere.** Shop 1 and Shop 4 see the biggest boost when you're there.
 
-2. **Focus your time wisely.** Split your week between Shop 1 and Shop 4 for maximum impact. Don't feel guilty about visiting your brother less—Shop 3 does fine without you.
+**Answer:** The data clearly demonstrates this: Shop 1 shows a +7.5 cars/day boost and Shop 4 shows a +6.9 cars/day boost when you're present. In contrast, Shop 3 (your brother's shop) only shows a +2.4 cars/day improvement, and Shop 5 shows +4.5. Your time investment yields vastly different returns depending on where you spend it.
 
-3. **The potential gain is real.** Following this strategy could add ~$30,000+ per month compared to random visits.
+Question 2. **Focus your time wisely.** Split your week between Shop 1 and Shop 4 for maximum impact. Don't feel guilty about visiting your brother less—Shop 3 does fine without you.
 
-4. **Keep tracking.** This analysis is based on 250 days. The more data you collect, the more confident we can be.
+**Answer:** The recommended schedule is to spend 2-3 days per week at Shop 1 and 2-3 days per week at Shop 4. Shop 3, managed by your brother, performs adequately without your oversight—the minimal +2.4 cars/day boost there means your time is better spent elsewhere. Visit Shop 3 socially, not for productivity reasons.
+
+Question 3. **The potential gain is real.** Following this strategy could add ~$30,000+ per month compared to random visits.
+
+**Answer:** At $200 profit per car, the optimal strategy (focusing on Shop 1 & 4) projects approximately $31,600/month in extra profit. Random visits yield roughly $25,700/month extra, while only visiting your brother's shop would generate just $10,500/month extra. The focused approach could generate nearly $6,000 more per month than random visits, translating to over $70,000 in additional annual profit.
+
+Question 4. **Keep tracking.** This analysis is based on 250 days. The more data you collect, the more confident we can be.
+
+**Answer:** The current analysis has limitations: only 250 total days of data, and Shop 2 has just 6 days where you were present (making that +8.4 boost estimate unreliable). Continued tracking will help validate whether these patterns hold, account for seasonal variations, and improve confidence in the recommendations. Consider systematically visiting Shop 2 more often to gather better data there.
 
 **Questions?** The data speaks clearly: prioritize where your presence makes the biggest difference.
 
