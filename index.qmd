@@ -412,87 +412,35 @@ Let's be honest about the limitations:
 3. **Other factors:** We don't know why your presence helps. Is it motivation? Oversight? Problem-solving? If something changes, the pattern could change.
 4. **Seasonality:** We don't know if certain times of year are different.
 
-### One Final Chart: The Boss Presence Effect in 3D
+### One Final Chart: Productivity Over the Year
 
 ```{python}
-#| fig-cap: "3D visualization showing how boss presence lifts productivity at each shop"
+#| fig-cap: "Daily productivity across all shops throughout the year"
 #| fig-width: 10
-#| fig-height: 7
+#| fig-height: 6
 
-from mpl_toolkits.mplot3d import Axes3D
+fig, ax = plt.subplots(figsize=(10, 6))
 
-fig = plt.figure(figsize=(10, 7))
-ax = fig.add_subplot(111, projection='3d')
+# Plot each shop's productivity over time (observation = day)
+colors_shops = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
+shop_names = ['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5']
 
-# Calculate average cars fixed for each shop-boss combination
-shops = [1, 2, 3, 4, 5]
-boss_away_means = []
-boss_present_means = []
+for shop in range(1, 6):
+    shop_data = carsDF[carsDF['shopID'] == shop].sort_values('observation')
+    ax.plot(shop_data['observation'], shop_data['carsFixed'], 
+            alpha=0.7, linewidth=1.5, color=colors_shops[shop-1], label=shop_names[shop-1])
+    
+    # Add markers for boss present days
+    boss_present = shop_data[shop_data['boss'] == 1]
+    ax.scatter(boss_present['observation'], boss_present['carsFixed'], 
+               color=colors_shops[shop-1], s=50, edgecolors='black', linewidth=1, zorder=5)
 
-for shop in shops:
-    away_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 0)]['carsFixed'].mean()
-    present_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed'].mean()
-    boss_away_means.append(away_mean)
-    boss_present_means.append(present_mean)
-
-# Create 3D bar chart
-bar_width = 0.35
-bar_depth = 0.5
-
-# Boss Away bars (y=0)
-x_away = np.array(shops) - bar_width/2
-y_away = np.zeros(5)
-z_away = np.zeros(5)
-dx = np.ones(5) * bar_width
-dy = np.ones(5) * bar_depth
-dz_away = boss_away_means
-
-ax.bar3d(x_away, y_away, z_away, dx, dy, dz_away, 
-         color='#E67E22', alpha=0.85, edgecolor='black', linewidth=0.8, label='Boss Away')
-
-# Boss Present bars (y=1)
-x_present = np.array(shops) - bar_width/2
-y_present = np.ones(5) * 1.0
-z_present = np.zeros(5)
-dz_present = boss_present_means
-
-ax.bar3d(x_present, y_present, z_present, dx, dy, dz_present, 
-         color='#27AE60', alpha=0.85, edgecolor='black', linewidth=0.8, label='Boss Present')
-
-# Add boost arrows/connectors to show the lift
-for i, shop in enumerate(shops):
-    boost = boss_present_means[i] - boss_away_means[i]
-    # Draw arrow from top of "away" bar to top of "present" bar
-    ax.plot([shop, shop], [0.25, 1.25], [boss_away_means[i], boss_present_means[i]], 
-            color='#2C3E50', linewidth=2, linestyle='--', alpha=0.7)
-    # Add boost label
-    mid_y = 0.75
-    mid_z = (boss_away_means[i] + boss_present_means[i]) / 2
-    ax.text(shop + 0.3, mid_y, mid_z + 3, f'+{boost:.1f}', 
-            fontsize=9, fontweight='bold', color='#2C3E50', ha='center')
-
-# Set labels and title
-ax.set_xlabel('\nShop', fontsize=11, fontweight='bold')
-ax.set_ylabel('\nBoss Presence', fontsize=11, fontweight='bold')
-ax.set_zlabel('\nAvg Cars Fixed/Day', fontsize=11, fontweight='bold')
-ax.set_title('The Boss Presence Effect: Productivity Lift by Shop', 
-             fontsize=14, fontweight='bold', pad=15)
-
-# Set tick labels
-ax.set_xticks(shops)
-ax.set_xticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
-ax.set_yticks([0.25, 1.25])
-ax.set_yticklabels(['Away', 'Present'])
-ax.set_zlim(0, 70)
-
-# Create custom legend
-from matplotlib.patches import Patch
-legend_elements = [Patch(facecolor='#E67E22', edgecolor='black', label='Boss Away'),
-                   Patch(facecolor='#27AE60', edgecolor='black', label='Boss Present')]
-ax.legend(handles=legend_elements, loc='upper left', fontsize=10)
-
-# Adjust view angle for best visualization
-ax.view_init(elev=25, azim=135)
+ax.set_xlabel('Day of Year (Observation)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Cars Fixed', fontsize=12, fontweight='bold')
+ax.set_title('Daily Productivity Across All Shops Over Time\n(Dots = Boss Present)', 
+             fontsize=14, fontweight='bold')
+ax.legend(loc='upper right', frameon=True)
+ax.set_ylim(0, 75)
 
 plt.tight_layout()
 plt.show()
