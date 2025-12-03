@@ -115,11 +115,15 @@ for i, shop in enumerate(range(1, 6)):
     n_present = len(shop_data[shop_data['boss'] == 1])
     
     ax.set_xticks([0, 1])
-    ax.set_xticklabels([f'You Away\n(n={n_away})', f'You Present\n(n={n_present})'])
+    ax.set_xticklabels(['You Away', 'You Present'])
     ax.set_ylabel('Cars Fixed', fontweight='bold')
     ax.set_title(f'Shop {shop}', fontsize=14, fontweight='bold', color=shop_colors[i])
     ax.set_ylim(0, 75)
     ax.set_xlim(-0.5, 1.5)
+    
+    # Add sample size labels below x-axis labels
+    ax.text(0, -6, f'(n={n_away})', ha='center', fontsize=9, style='italic')
+    ax.text(1, -6, f'(n={n_present})', ha='center', fontsize=9, style='italic')
 
 # Add legend to the first subplot
 from matplotlib.patches import Patch
