@@ -66,10 +66,10 @@ We analyzed 250 days of productivity data across your 5 shops. Here's every sing
 
 ```{python}
 #| fig-cap: "Each dot is one day. Green = you were there. Orange = you were away."
-#| fig-width: 10
+#| fig-width: 8
 #| fig-height: 6
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(8, 6))
 
 # Add jitter for better visibility
 np.random.seed(42)
@@ -122,9 +122,9 @@ jitter_y = 0.05
 # Create colors based on boss presence
 colors_3d = ['#E67E22' if b == 0 else '#27AE60' for b in carsDF['boss']]
 
-# Add jittered positions
+# Add jittered positions (flip boss so Present is at y=0, Away is at y=1)
 x_jittered = carsDF['shopID'] + np.random.uniform(-jitter_x, jitter_x, len(carsDF))
-y_jittered = carsDF['boss'] + np.random.uniform(-jitter_y, jitter_y, len(carsDF))
+y_jittered = (1 - carsDF['boss']) + np.random.uniform(-jitter_y, jitter_y, len(carsDF))
 
 # Create the 3D scatter plot
 scatter = ax.scatter(x_jittered, y_jittered, carsDF['carsFixed'], 
@@ -140,14 +140,15 @@ ax.set_title('3D View: Productivity by Shop and Boss Presence', fontsize=14, fon
 ax.set_xticks([1, 2, 3, 4, 5])
 ax.set_xticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
 ax.set_yticks([0, 1])
-ax.set_yticklabels(['Away', 'Present'])
+ax.set_yticklabels(['Present', 'Away'])
 
-# Add mean surfaces/bars for each shop-boss combination
+# Add mean surfaces/bars for each shop-boss combination (flip y so Present is at 0, Away at 1)
 for shop in range(1, 6):
     for boss in [0, 1]:
         mean_cars = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == boss)]['carsFixed'].mean()
         color = '#E67E22' if boss == 0 else '#27AE60'
-        ax.bar3d(shop - 0.2, boss - 0.1, 0, 0.4, 0.2, mean_cars, 
+        y_pos = 1 - boss  # Flip: boss=1 (Present) goes to y=0, boss=0 (Away) goes to y=1
+        ax.bar3d(shop - 0.2, y_pos - 0.1, 0, 0.4, 0.2, mean_cars, 
                  color=color, alpha=0.3, edgecolor='black', linewidth=0.5)
 
 # Create custom legend
