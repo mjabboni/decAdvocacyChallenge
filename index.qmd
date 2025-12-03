@@ -54,9 +54,9 @@ boss_stats = carsDF.groupby(['shopID', 'boss'])['carsFixed'].apply(calc_ci).unst
 
 ## The Bottom Line 🎯
 
-**Patrick, here's what your data tells us:** Your presence at the shop matters most at **Shop 1** and **Shop 4**. When you're there, these shops fix significantly more cars. Some other shops? They do just fine without you.
+**Patrick, here's what your data tells us:** Your presence at the shop matters most at **Shop 4** and **Shop 1**. When you're there, these shops fix significantly more cars. Some other shops? They do just fine without you.
 
-**Our recommendation:** Focus your time on **Shop 1** and **Shop 4**. Skip regular visits to Shop 5—your brother's shop (Shop 3) and Shop 2 show little benefit from your presence.
+**Our recommendation:** Focus your time on **Shop 4** and **Shop 1**. Your brother's shop (Shop 3) shows the least benefit from your presence. Shop 2 shows promise but needs more data to confirm.
 
 ---
 
@@ -227,11 +227,11 @@ plt.show()
 
 | Shop | Extra Cars/Day | What This Means |
 |------|----------------|-----------------|
-| **Shop 1** | **+7.5** | 🌟 **Big impact!** Your presence makes a major difference |
-| **Shop 4** | **+6.9** | 🌟 **Big impact!** Definitely worth your time |
-| Shop 2 | +8.4 | Looks good, but we have very few days of data here |
-| Shop 3 | +2.4 | Small boost—your brother's shop does okay either way |
-| Shop 5 | +4.5 | Moderate boost, but this shop already performs well |
+| **Shop 4** | **+12.6** | 🌟 **Biggest impact!** Your presence makes a huge difference |
+| **Shop 2** | **+10.1** | 🌟 **Big impact!** But only 5 days of data—needs more tracking |
+| Shop 5 | +8.8 | Strong boost, this shop responds well to your presence |
+| Shop 1 | +7.0 | Solid impact—definitely worth your time |
+| Shop 3 | +3.4 | Small boost—your brother's shop does okay either way |
 
 ---
 
@@ -310,7 +310,7 @@ plt.show()
 **What you can trust:**
 
 - ✅ **Shop 1 & Shop 4:** These boosts are real. The data is solid.
-- ⚠️ **Shop 2:** Shows a boost, but we only have 6 days of you being there. Need more data.
+- ⚠️ **Shop 2:** Shows a boost, but we only have 5 days of you being there. Need more data.
 - ⚠️ **Shops 3 & 5:** Benefits are smaller and less certain.
 
 ---
@@ -382,9 +382,9 @@ plt.show()
 
 **Translation:**
 
-- 🎯 **Optimal Strategy (Shop 1 & 4):** Could add ~$31,600/month in extra profit
-- 📊 **Random Visits:** ~$25,700/month in extra profit
-- 🤝 **Brother's Shop Only:** ~$10,500/month—you'd be leaving money on the table
+- 🎯 **Optimal Strategy (Shop 1 & 4):** Could add ~$43,100/month in extra profit
+- 📊 **Random Visits:** ~$36,900/month in extra profit
+- 🤝 **Brother's Shop Only:** ~$15,000/month—you'd be leaving money on the table
 - ❌ **Never Visit:** $0 extra—just baseline performance
 
 ---
@@ -397,18 +397,18 @@ Based on 250 days of data, here's what we recommend:
 
 | Priority | Shop | Days/Week | Why |
 |----------|------|-----------|-----|
-| **🥇 High** | Shop 1 | 2-3 days | +7.5 cars/day boost. They need you most. |
-| **🥈 High** | Shop 4 | 2-3 days | +6.9 cars/day boost. Strong impact here too. |
-| **🥉 Medium** | Shop 5 | 1 day | Already performs well, but moderate boost. |
+| **🥇 High** | Shop 4 | 2-3 days | +12.6 cars/day boost. They need you most! |
+| **🥈 High** | Shop 1 | 2-3 days | +7.0 cars/day boost. Strong impact here too. |
+| **🥉 Medium** | Shop 5 | 1 day | +8.8 cars/day boost, and already performs well. |
 | **⏸️ Low** | Shop 3 | Occasional | Your brother runs it fine. Visit socially! |
-| **📊 Watch** | Shop 2 | TBD | Need more data—track your visits here. |
+| **📊 Watch** | Shop 2 | TBD | +10.1 boost but only 5 days of data—track more visits. |
 
 ### What Could Go Wrong?
 
 Let's be honest about the limitations:
 
 1. **Sample size:** 250 days isn't huge. Patterns could shift.
-2. **Shop 2 data:** We only have 6 days of you being there. The +8.4 boost looks great, but it might not hold up.
+2. **Shop 2 data:** We only have 5 days of you being there. The +10.1 boost looks great, but it might not hold up.
 3. **Other factors:** We don't know why your presence helps. Is it motivation? Oversight? Problem-solving? If something changes, the pattern could change.
 4. **Seasonality:** We don't know if certain times of year are different.
 
@@ -465,19 +465,19 @@ plt.show()
 
 Question 1. **Your presence matters—but not equally everywhere.** Shop 1 and Shop 4 see the biggest boost when you're there.
 
-**Answer:** The data clearly demonstrates this: Shop 1 shows a +7.5 cars/day boost and Shop 4 shows a +6.9 cars/day boost when you're present. In contrast, Shop 3 (your brother's shop) only shows a +2.4 cars/day improvement, and Shop 5 shows +4.5. Your time investment yields vastly different returns depending on where you spend it.
+**Answer:** The data clearly demonstrates this: Shop 4 shows a +12.6 cars/day boost and Shop 1 shows a +7.0 cars/day boost when you're present. In contrast, Shop 3 (your brother's shop) only shows a +3.4 cars/day improvement, while Shop 5 shows +8.8 and Shop 2 shows +10.1 (though with limited data). Your time investment yields vastly different returns depending on where you spend it.
 
 Question 2. **Focus your time wisely.** Split your week between Shop 1 and Shop 4 for maximum impact. Don't feel guilty about visiting your brother less—Shop 3 does fine without you.
 
-**Answer:** The recommended schedule is to spend 2-3 days per week at Shop 1 and 2-3 days per week at Shop 4. Shop 3, managed by your brother, performs adequately without your oversight—the minimal +2.4 cars/day boost there means your time is better spent elsewhere. Visit Shop 3 socially, not for productivity reasons.
+**Answer:** The recommended schedule is to spend 2-3 days per week at Shop 4 and 2-3 days per week at Shop 1. Shop 3, managed by your brother, performs adequately without your oversight—the minimal +3.4 cars/day boost there means your time is better spent elsewhere. Visit Shop 3 socially, not for productivity reasons.
 
-Question 3. **The potential gain is real.** Following this strategy could add ~$30,000+ per month compared to random visits.
+Question 3. **The potential gain is real.** Following this strategy could add ~$43,000+ per month compared to no visits.
 
-**Answer:** At $200 profit per car, the optimal strategy (focusing on Shop 1 & 4) projects approximately $31,600/month in extra profit. Random visits yield roughly $25,700/month extra, while only visiting your brother's shop would generate just $10,500/month extra. The focused approach could generate nearly $6,000 more per month than random visits, translating to over $70,000 in additional annual profit.
+**Answer:** At $200 profit per car, the optimal strategy (focusing on Shop 4 & 1) projects approximately $43,100/month in extra profit. Random visits yield roughly $36,900/month extra, while only visiting your brother's shop would generate just $15,000/month extra. The focused approach could generate roughly $6,200 more per month than random visits, translating to over $74,000 in additional annual profit.
 
 Question 4. **Keep tracking.** This analysis is based on 250 days. The more data you collect, the more confident we can be.
 
-**Answer:** The current analysis has limitations: only 250 total days of data, and Shop 2 has just 6 days where you were present (making that +8.4 boost estimate unreliable). Continued tracking will help validate whether these patterns hold, account for seasonal variations, and improve confidence in the recommendations. Consider systematically visiting Shop 2 more often to gather better data there.
+**Answer:** The current analysis has limitations: only 250 total days of data, and Shop 2 has just 5 days where you were present (making that +10.1 boost estimate unreliable). Continued tracking will help validate whether these patterns hold, account for seasonal variations, and improve confidence in the recommendations. Consider systematically visiting Shop 2 more often to gather better data there.
 
 **Questions?** The data speaks clearly: prioritize where your presence makes the biggest difference.
 
