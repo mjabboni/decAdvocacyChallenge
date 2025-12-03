@@ -65,38 +65,82 @@ boss_stats = carsDF.groupby(['shopID', 'boss'])['carsFixed'].apply(calc_ci).unst
 We analyzed 250 days of productivity data across your 5 shops. Here's every single day plotted—you can see the pattern clearly:
 
 ```{python}
-#| fig-cap: "Each dot is one day. Green = you were there. Orange = you were away."
-#| fig-width: 8
-#| fig-height: 6
+#| fig-cap: "Each dot is one day. Green = you were there. Orange = you were away. Delta shows the difference in average cars fixed."
+#| fig-width: 12
+#| fig-height: 8
 
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, axes = plt.subplots(2, 3, figsize=(12, 8))
+axes = axes.flatten()
 
-# Add jitter for better visibility
 np.random.seed(42)
 jitter = 0.15
 
 colors = {'You Away': '#E67E22', 'You Present': '#27AE60'}
+shop_colors = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
 
-for boss_label, color in colors.items():
-    mask = carsDF['Boss Present'] == boss_label
-    data = carsDF[mask]
-    x = data['shopID'] + np.random.uniform(-jitter, jitter, len(data))
-    ax.scatter(x, data['carsFixed'], alpha=0.6, s=60, c=color, 
-               label=boss_label, edgecolors='white', linewidth=0.5)
+for i, shop in enumerate(range(1, 6)):
+    ax = axes[i]
+    shop_data = carsDF[carsDF['shopID'] == shop]
+    
+    # Plot points for each boss presence status
+    for j, (boss_label, color) in enumerate(colors.items()):
+        mask = shop_data['Boss Present'] == boss_label
+        data = shop_data[mask]
+        x = np.zeros(len(data)) + j + np.random.uniform(-jitter, jitter, len(data))
+        ax.scatter(x, data['carsFixed'], alpha=0.6, s=60, c=color, 
+                   edgecolors='white', linewidth=0.5)
+    
+    # Calculate and show means
+    away_mean = shop_data[shop_data['boss'] == 0]['carsFixed'].mean()
+    present_mean = shop_data[shop_data['boss'] == 1]['carsFixed'].mean()
+    delta = present_mean - away_mean
+    
+    # Draw mean lines
+    ax.hlines(away_mean, -0.3, 0.3, colors='#E67E22', linewidth=3, linestyle='-')
+    ax.hlines(present_mean, 0.7, 1.3, colors='#27AE60', linewidth=3, linestyle='-')
+    
+    # Draw delta arrow
+    ax.annotate('', xy=(0.5, present_mean), xytext=(0.5, away_mean),
+                arrowprops=dict(arrowstyle='->', color='black', lw=2))
+    
+    # Add delta label
+    delta_color = '#27AE60' if delta > 0 else '#E74C3C'
+    delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
+    mid_y = (away_mean + present_mean) / 2
+    ax.text(0.5, mid_y, f'Δ {delta_label}', ha='center', va='center', fontsize=11, 
+            fontweight='bold', color='white',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor=delta_color, edgecolor='none', alpha=0.9))
+    
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(['You Away', 'You Present'])
+    ax.set_ylabel('Cars Fixed', fontweight='bold')
+    ax.set_title(f'Shop {shop}', fontsize=14, fontweight='bold', color=shop_colors[i])
+    ax.set_ylim(0, 75)
+    ax.set_xlim(-0.5, 1.5)
+    
+    # Add sample sizes
+    n_away = len(shop_data[shop_data['boss'] == 0])
+    n_present = len(shop_data[shop_data['boss'] == 1])
+    ax.text(0, -3, f'n={n_away}', ha='center', fontsize=9, style='italic')
+    ax.text(1, -3, f'n={n_present}', ha='center', fontsize=9, style='italic')
 
-ax.set_xlabel('Shop Number', fontsize=12, fontweight='bold')
-ax.set_ylabel('Cars Fixed That Day', fontsize=12, fontweight='bold')
-ax.set_title('Daily Productivity: All 250 Days Across Your 5 Shops', fontsize=14, fontweight='bold')
-ax.set_xticks([1, 2, 3, 4, 5])
-ax.set_xticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
-ax.legend(title='Your Presence', loc='upper left', frameon=True)
-ax.set_ylim(0, 75)
+# Hide the 6th subplot
+axes[5].axis('off')
 
+# Add legend in the empty subplot area
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='#E67E22', label='You Away'),
+                   Patch(facecolor='#27AE60', label='You Present')]
+axes[5].legend(handles=legend_elements, loc='center', fontsize=12, title='Your Presence', 
+               title_fontsize=12, frameon=True)
+
+fig.suptitle('Daily Productivity Split by Shop: Boss Presence Delta', fontsize=16, fontweight='bold', y=0.98)
 plt.tight_layout()
+plt.subplots_adjust(top=0.92)
 plt.show()
 ```
 
-**What you see:** Shop 1 has a huge spread—some low days when you're away, but much better when you're there. Shop 4 also shows improvement with you present. But look at Shop 5: the green and orange dots overlap completely—your presence doesn't change much there.
+**What you see:** Each panel shows one shop, with data points split by your presence. The delta (Δ) shows how many more cars get fixed when you're there. Shop 4 has the biggest delta (+12.6), while Shop 3 (your brother's shop) shows the smallest improvement (+3.4). Notice how Shop 2's high delta (+10.1) comes from just 5 data points—less reliable than the others.
 
 ---
 
