@@ -218,7 +218,7 @@ for bar, boost, ci in zip(bars, boost_df['Boost'], boost_df['CI']):
                 xytext=(0, -8), textcoords='offset points',
                 ha='center', va='top', fontsize=12, fontweight='bold')
 
-ax.set_ylim(-5, 15)
+ax.set_ylim(-5, 20)
 plt.tight_layout()
 plt.show()
 ```
@@ -241,13 +241,13 @@ plt.show()
 
 ```{python}
 #| fig-cap: "Sample sizes and reliability of our estimates"
-#| fig-width: 8
-#| fig-height: 4
+#| fig-width: 6
+#| fig-height: 3
 
 # Sample size breakdown
 sample_sizes = carsDF.groupby(['Shop', 'Boss Present']).size().unstack()
 
-fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+fig, axes = plt.subplots(1, 2, figsize=(6, 3))
 
 # Left plot: Sample sizes
 ax1 = axes[0]
@@ -293,6 +293,7 @@ for i, shop in enumerate(range(1, 6)):
 ax2.axvline(x=0, color='red', linestyle='--', linewidth=2, label='No effect')
 ax2.set_yticks(range(5))
 ax2.set_yticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
+ax2.invert_yaxis()  # Shop 1 at top, Shop 5 at bottom
 ax2.set_xlabel('Extra Cars Fixed (95% confidence range)', fontweight='bold')
 ax2.set_title('How Sure Are We?', fontweight='bold')
 
@@ -373,7 +374,7 @@ for bar in bars:
 
 # Format y-axis with dollar signs and K notation
 ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
-ax.set_ylim(0, max(scenarios.values()) * 1.15)
+ax.set_ylim(0, max(scenarios.values()) * 1.25)
 
 plt.tight_layout()
 plt.show()
