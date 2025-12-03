@@ -241,13 +241,13 @@ plt.show()
 
 ```{python}
 #| fig-cap: "Sample sizes and reliability of our estimates"
-#| fig-width: 9
+#| fig-width: 8
 #| fig-height: 4
 
 # Sample size breakdown
 sample_sizes = carsDF.groupby(['Shop', 'Boss Present']).size().unstack()
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 4))
+fig, axes = plt.subplots(1, 2, figsize=(8, 4))
 
 # Left plot: Sample sizes
 ax1 = axes[0]
@@ -320,8 +320,8 @@ Let's say each car fixed earns you **$200 in profit**. Here's what different sch
 
 ```{python}
 #| fig-cap: "Projected monthly profit under different scheduling strategies"
-#| fig-width: 8
-#| fig-height: 5
+#| fig-width: 9
+#| fig-height: 7
 
 # Calculate average daily productivity for each scenario
 avg_without_boss = carsDF[carsDF['boss'] == 0].groupby('shopID')['carsFixed'].mean()
@@ -329,6 +329,9 @@ avg_with_boss = carsDF[carsDF['boss'] == 1].groupby('shopID')['carsFixed'].mean(
 
 # Assume 22 working days per month, Patrick can visit 1 shop per day
 profit_per_car = 200
+
+# Calculate baseline monthly profit (all 5 shops operating without boss visits)
+baseline_monthly_profit = 22 * 5 * avg_without_boss.mean() * profit_per_car
 
 # Scenario 1: Random visits (current pattern)
 current_boost = summary_pivot['Boost'].mean()  # average boost across shops
@@ -342,33 +345,35 @@ brother_boost = summary_pivot.loc[3, 'Boost']
 # Scenario 4: Never visit (baseline)
 no_visit_boost = 0
 
+# Calculate TOTAL monthly profits (baseline + extra from visits)
 scenarios = {
-    'Never Visit\n(Baseline)': 0,
-    'Random Visits\n(Current)': current_boost * 22,
-    "Brother's Shop\n(Shop 3 Only)": brother_boost * 22,
-    'Optimal Strategy\n(Shop 1 & 4)': best_boost * 22
+    'Never Visit\n(Baseline)': baseline_monthly_profit,
+    'Random Visits\n(Current)': baseline_monthly_profit + current_boost * 22 * profit_per_car,
+    "Brother's Shop\n(Shop 3 Only)": baseline_monthly_profit + brother_boost * 22 * profit_per_car,
+    'Optimal Strategy\n(Shop 1 & 4)': baseline_monthly_profit + best_boost * 22 * profit_per_car
 }
 
-fig, ax = plt.subplots(figsize=(8, 5))
+fig, ax = plt.subplots(figsize=(9, 7))
 
 colors_scenario = ['#E74C3C', '#F39C12', '#3498DB', '#27AE60']
-bars = ax.bar(scenarios.keys(), [v * profit_per_car for v in scenarios.values()], 
+bars = ax.bar(scenarios.keys(), scenarios.values(), 
               color=colors_scenario, edgecolor='black', linewidth=1.5)
 
-ax.set_ylabel('Extra Monthly Profit ($)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Total Monthly Profit ($)', fontsize=12, fontweight='bold')
 ax.set_title('What Different Scheduling Strategies Could Mean for Your Profits', 
              fontsize=14, fontweight='bold')
 
 # Add dollar labels
 for bar in bars:
     height = bar.get_height()
-    label = f'${height:,.0f}' if height >= 0 else f'-${abs(height):,.0f}'
+    label = f'${height:,.0f}'
     ax.annotate(label, xy=(bar.get_x() + bar.get_width()/2, height),
                 xytext=(0, 5), textcoords='offset points',
                 ha='center', fontsize=14, fontweight='bold')
 
-ax.axhline(y=0, color='black', linestyle='-', linewidth=1)
-ax.set_ylim(-2000, 35000)
+# Format y-axis with dollar signs and K notation
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
+ax.set_ylim(0, max(scenarios.values()) * 1.15)
 
 plt.tight_layout()
 plt.show()
@@ -437,7 +442,7 @@ ax.plot(months, optimal_monthly, 'o-', color='#27AE60', linewidth=2, markersize=
 
 ax.set_ylabel('Monthly Profit ($)', fontsize=12, fontweight='bold')
 ax.set_title('Projected Year: Following the Optimal Strategy vs. No Strategy', fontsize=14, fontweight='bold')
-ax.legend(loc='lower right', fontsize=11)
+ax.legend(loc='upper right', fontsize=11)
 
 # Add total annotation
 total_gain = sum(optimal_monthly) - sum(baseline_monthly)
