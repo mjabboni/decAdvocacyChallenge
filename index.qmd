@@ -218,7 +218,7 @@ for bar, boost, ci in zip(bars, boost_df['Boost'], boost_df['CI']):
                 xytext=(0, -8), textcoords='offset points',
                 ha='center', va='top', fontsize=12, fontweight='bold')
 
-ax.set_ylim(-5, 20)
+ax.set_ylim(-5, 25)
 plt.tight_layout()
 plt.show()
 ```
@@ -320,7 +320,7 @@ plt.show()
 Let's say each car fixed earns you **$200 in profit**. Here's what different scheduling strategies could mean for your wallet:
 
 ```{python}
-#| fig-cap: "Projected monthly profit under different scheduling strategies"
+#| fig-cap: "Extra monthly profit above baseline under different scheduling strategies"
 #| fig-width: 9
 #| fig-height: 7
 
@@ -346,12 +346,12 @@ brother_boost = summary_pivot.loc[3, 'Boost']
 # Scenario 4: Never visit (baseline)
 no_visit_boost = 0
 
-# Calculate TOTAL monthly profits (baseline + extra from visits)
+# Calculate EXTRA monthly profits from visits (above baseline)
 scenarios = {
-    'Never Visit\n(Baseline)': baseline_monthly_profit,
-    'Random Visits\n(Current)': baseline_monthly_profit + current_boost * 22 * profit_per_car,
-    "Brother's Shop\n(Shop 3 Only)": baseline_monthly_profit + brother_boost * 22 * profit_per_car,
-    'Optimal Strategy\n(Shop 1 & 4)': baseline_monthly_profit + best_boost * 22 * profit_per_car
+    'Never Visit\n(Baseline)': no_visit_boost * 22 * profit_per_car,
+    'Random Visits\n(Current)': current_boost * 22 * profit_per_car,
+    "Brother's Shop\n(Shop 3 Only)": brother_boost * 22 * profit_per_car,
+    'Optimal Strategy\n(Shop 1 & 4)': best_boost * 22 * profit_per_car
 }
 
 fig, ax = plt.subplots(figsize=(9, 7))
@@ -360,8 +360,8 @@ colors_scenario = ['#E74C3C', '#F39C12', '#3498DB', '#27AE60']
 bars = ax.bar(scenarios.keys(), scenarios.values(), 
               color=colors_scenario, edgecolor='black', linewidth=1.5)
 
-ax.set_ylabel('Total Monthly Profit ($)', fontsize=12, fontweight='bold')
-ax.set_title('What Different Scheduling Strategies Could Mean for Your Profits', 
+ax.set_ylabel('Extra Monthly Profit ($)', fontsize=12, fontweight='bold')
+ax.set_title('Extra Profit from Different Scheduling Strategies', 
              fontsize=14, fontweight='bold')
 
 # Add dollar labels
