@@ -294,7 +294,7 @@ ax2.axvline(x=0, color='red', linestyle='--', linewidth=2, label='No effect')
 ax2.set_yticks(range(5))
 ax2.set_yticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
 ax2.invert_yaxis()  # Shop 1 at top, Shop 5 at bottom
-ax2.set_xlabel('Extra Cars Fixed (95% confidence range)', fontweight='bold')
+ax2.set_xlabel('Extra Cars Fixed (95% confidence range)', fontweight='bold', fontsize=8)
 ax2.set_title('How Sure Are We?', fontweight='bold')
 
 plt.tight_layout()
@@ -412,47 +412,88 @@ Let's be honest about the limitations:
 3. **Other factors:** We don't know why your presence helps. Is it motivation? Oversight? Problem-solving? If something changes, the pattern could change.
 4. **Seasonality:** We don't know if certain times of year are different.
 
-### One Final Chart: Your Projected Year
+### One Final Chart: The Boss Presence Effect in 3D
 
 ```{python}
-#| fig-cap: "Projected annual impact of following the optimal strategy"
-#| fig-width: 8
-#| fig-height: 5
+#| fig-cap: "3D visualization showing how boss presence lifts productivity at each shop"
+#| fig-width: 10
+#| fig-height: 7
 
-# Monthly projection over a year
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-baseline = 22 * 5 * avg_without_boss.mean() * profit_per_car  # 5 shops, avg cars, 22 days
+from mpl_toolkits.mplot3d import Axes3D
 
-# Optimal adds the boost from Shop 1 & 4 visits
-optimal_boost_monthly = best_boost * 22 * profit_per_car
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
 
-baseline_monthly = [baseline] * 12
-optimal_monthly = [baseline + optimal_boost_monthly] * 12
+# Calculate average cars fixed for each shop-boss combination
+shops = [1, 2, 3, 4, 5]
+boss_away_means = []
+boss_present_means = []
 
-# Add some realistic variance
-np.random.seed(42)
-variance = np.random.normal(0, 5000, 12)
-optimal_monthly = [o + v for o, v in zip(optimal_monthly, variance)]
-baseline_monthly = [b + v*0.5 for b, v in zip(baseline_monthly, variance)]
+for shop in shops:
+    away_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 0)]['carsFixed'].mean()
+    present_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed'].mean()
+    boss_away_means.append(away_mean)
+    boss_present_means.append(present_mean)
 
-fig, ax = plt.subplots(figsize=(8, 5))
+# Create 3D bar chart
+bar_width = 0.35
+bar_depth = 0.5
 
-ax.fill_between(months, baseline_monthly, optimal_monthly, alpha=0.3, color='#27AE60')
-ax.plot(months, baseline_monthly, 'o-', color='#E67E22', linewidth=2, markersize=8, label='Without Smart Scheduling')
-ax.plot(months, optimal_monthly, 'o-', color='#27AE60', linewidth=2, markersize=8, label='With Optimal Strategy')
+# Boss Away bars (y=0)
+x_away = np.array(shops) - bar_width/2
+y_away = np.zeros(5)
+z_away = np.zeros(5)
+dx = np.ones(5) * bar_width
+dy = np.ones(5) * bar_depth
+dz_away = boss_away_means
 
-ax.set_ylabel('Monthly Profit ($)', fontsize=12, fontweight='bold')
-ax.set_title('Projected Year: Following the Optimal Strategy vs. No Strategy', fontsize=14, fontweight='bold')
-ax.legend(loc='upper right', fontsize=11)
+ax.bar3d(x_away, y_away, z_away, dx, dy, dz_away, 
+         color='#E67E22', alpha=0.85, edgecolor='black', linewidth=0.8, label='Boss Away')
 
-# Add total annotation
-total_gain = sum(optimal_monthly) - sum(baseline_monthly)
-ax.annotate(f'Annual Gain:\n~${total_gain:,.0f}', xy=(10, (optimal_monthly[10] + baseline_monthly[10])/2),
-            fontsize=12, fontweight='bold', ha='center',
-            bbox=dict(boxstyle='round', facecolor='#27AE60', alpha=0.8, edgecolor='none'),
-            color='white')
+# Boss Present bars (y=1)
+x_present = np.array(shops) - bar_width/2
+y_present = np.ones(5) * 1.0
+z_present = np.zeros(5)
+dz_present = boss_present_means
 
-ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
+ax.bar3d(x_present, y_present, z_present, dx, dy, dz_present, 
+         color='#27AE60', alpha=0.85, edgecolor='black', linewidth=0.8, label='Boss Present')
+
+# Add boost arrows/connectors to show the lift
+for i, shop in enumerate(shops):
+    boost = boss_present_means[i] - boss_away_means[i]
+    # Draw arrow from top of "away" bar to top of "present" bar
+    ax.plot([shop, shop], [0.25, 1.25], [boss_away_means[i], boss_present_means[i]], 
+            color='#2C3E50', linewidth=2, linestyle='--', alpha=0.7)
+    # Add boost label
+    mid_y = 0.75
+    mid_z = (boss_away_means[i] + boss_present_means[i]) / 2
+    ax.text(shop + 0.3, mid_y, mid_z + 3, f'+{boost:.1f}', 
+            fontsize=9, fontweight='bold', color='#2C3E50', ha='center')
+
+# Set labels and title
+ax.set_xlabel('\nShop', fontsize=11, fontweight='bold')
+ax.set_ylabel('\nBoss Presence', fontsize=11, fontweight='bold')
+ax.set_zlabel('\nAvg Cars Fixed/Day', fontsize=11, fontweight='bold')
+ax.set_title('The Boss Presence Effect: Productivity Lift by Shop', 
+             fontsize=14, fontweight='bold', pad=15)
+
+# Set tick labels
+ax.set_xticks(shops)
+ax.set_xticklabels(['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5'])
+ax.set_yticks([0.25, 1.25])
+ax.set_yticklabels(['Away', 'Present'])
+ax.set_zlim(0, 70)
+
+# Create custom legend
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='#E67E22', edgecolor='black', label='Boss Away'),
+                   Patch(facecolor='#27AE60', edgecolor='black', label='Boss Present')]
+ax.legend(handles=legend_elements, loc='upper left', fontsize=10)
+
+# Adjust view angle for best visualization
+ax.view_init(elev=25, azim=135)
+
 plt.tight_layout()
 plt.show()
 ```
