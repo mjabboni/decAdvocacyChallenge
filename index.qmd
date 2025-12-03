@@ -466,6 +466,9 @@ Let's be honest about the limitations:
 fig, axes = plt.subplots(2, 3, figsize=(10, 10))
 axes = axes.flatten()
 
+# Set font for this chart
+plt.rcParams['font.family'] = 'Georgia'
+
 colors_shops = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
 shop_names = ['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5']
 
@@ -505,7 +508,7 @@ for i, shop in enumerate(range(1, 6)):
     
     # Draw delta arrow between means
     ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-                arrowprops=dict(arrowstyle='->', color='black', lw=2, ls='--'))
+                arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
     
     # Add delta label
     delta_color = '#27AE60' if delta > 0 else '#E74C3C'
