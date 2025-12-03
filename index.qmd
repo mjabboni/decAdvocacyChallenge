@@ -416,10 +416,10 @@ Let's be honest about the limitations:
 
 ```{python}
 #| fig-cap: "Daily productivity across all shops throughout the year"
-#| fig-width: 6
-#| fig-height: 9
+#| fig-width: 5
+#| fig-height: 11
 
-fig, ax = plt.subplots(figsize=(6, 9))
+fig, ax = plt.subplots(figsize=(5, 11))
 
 # Plot each shop's productivity over time (observation = day)
 colors_shops = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
