@@ -422,6 +422,94 @@ plt.tight_layout()
 plt.show()
 ```
 
+### Long-Term Profit Projection 📈
+
+What do these strategies look like over a full year? Here's how your profits compound:
+
+```{python}
+#| fig-cap: "Cumulative extra profit projection over 12 months by scheduling strategy"
+#| fig-width: 10
+#| fig-height: 6
+
+# Calculate monthly extra profits for each strategy
+monthly_profits = {
+    'Never Visit (Baseline)': no_visit_boost * 22 * profit_per_car,
+    'Random Visits (Current)': current_boost * 22 * profit_per_car,
+    "Brother's Shop Only (Shop 3)": brother_boost * 22 * profit_per_car,
+    'Optimal Strategy (Shop 1 & 4)': best_boost * 22 * profit_per_car
+}
+
+# Create 12-month cumulative projection
+months = np.arange(1, 13)
+month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+colors_line = {'Never Visit (Baseline)': '#E74C3C', 
+               'Random Visits (Current)': '#F39C12',
+               "Brother's Shop Only (Shop 3)": '#3498DB', 
+               'Optimal Strategy (Shop 1 & 4)': '#27AE60'}
+
+markers = {'Never Visit (Baseline)': 'o', 
+           'Random Visits (Current)': 's',
+           "Brother's Shop Only (Shop 3)": '^', 
+           'Optimal Strategy (Shop 1 & 4)': 'D'}
+
+for strategy, monthly in monthly_profits.items():
+    cumulative = months * monthly
+    ax.plot(months, cumulative, marker=markers[strategy], linewidth=2.5, 
+            markersize=8, label=strategy, color=colors_line[strategy])
+    # Add end-of-year label
+    ax.annotate(f'${cumulative[-1]/1000:.0f}K', xy=(12, cumulative[-1]),
+                xytext=(12.3, cumulative[-1]), fontsize=10, fontweight='bold',
+                color=colors_line[strategy], va='center')
+
+# Shade the area between optimal and random to show opportunity cost
+optimal_cumulative = months * monthly_profits['Optimal Strategy (Shop 1 & 4)']
+random_cumulative = months * monthly_profits['Random Visits (Current)']
+ax.fill_between(months, random_cumulative, optimal_cumulative, alpha=0.2, color='#27AE60',
+                label='Extra from Optimal vs Random')
+
+ax.set_xlabel('Month', fontsize=12, fontweight='bold')
+ax.set_ylabel('Cumulative Extra Profit ($)', fontsize=12, fontweight='bold')
+ax.set_title('Long-Term Profit Projection: Optimal Strategy Compounds Over Time', 
+             fontsize=14, fontweight='bold')
+ax.set_xticks(months)
+ax.set_xticklabels(month_labels)
+ax.set_xlim(0.5, 13)
+
+# Format y-axis with dollar signs and K notation
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
+
+# Add legend
+ax.legend(loc='upper left', fontsize=9, frameon=True)
+
+# Add grid for readability
+ax.grid(True, alpha=0.3, linestyle='--')
+
+# Add annotation for yearly difference between optimal and random
+yearly_diff = optimal_cumulative[-1] - random_cumulative[-1]
+ax.annotate(f'Optimal advantage:\n+${yearly_diff/1000:.0f}K/year', 
+            xy=(6, (optimal_cumulative[5] + random_cumulative[5])/2),
+            fontsize=11, fontweight='bold', color='#27AE60',
+            bbox=dict(boxstyle='round,pad=0.4', facecolor='white', edgecolor='#27AE60', alpha=0.9),
+            ha='center')
+
+plt.tight_layout()
+plt.show()
+```
+
+**The compounding effect is clear:**
+
+| Strategy | Monthly Extra | Annual Extra | vs. Optimal |
+|----------|--------------|--------------|-------------|
+| **Optimal (Shop 1 & 4)** | ~$43,100 | **~$517,000** | — |
+| Random Visits | ~$36,900 | ~$443,000 | -$74K/year |
+| Brother's Shop Only | ~$15,000 | ~$180,000 | -$337K/year |
+| Never Visit | $0 | $0 | -$517K/year |
+
+**The green shaded area** shows the extra profit you capture by switching from random visits to the optimal strategy—that's an additional **~$74,000 per year** just by being smarter about where you spend your time.
+
 **Translation:**
 
 - 🎯 **Optimal Strategy (Shop 1 & 4):** Could add ~$43,100/month in extra profit
