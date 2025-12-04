@@ -66,10 +66,11 @@ We analyzed 250 days of productivity data across your 5 shops. Here's every sing
 
 ```{python}
 #| fig-cap: "Each dot is one day. Green = you were there. Orange = you were away. Delta shows the difference in average cars fixed."
-#| fig-width: 8
-#| fig-height: 20
+#| fig-width: 12
+#| fig-height: 8
 
-fig, axes = plt.subplots(5, 1, figsize=(8, 20))
+fig, axes = plt.subplots(2, 3, figsize=(12, 8))
+axes = axes.flatten()
 
 np.random.seed(42)
 jitter = 0.15
@@ -86,7 +87,7 @@ for i, shop in enumerate(range(1, 6)):
         mask = shop_data['Boss Present'] == boss_label
         data = shop_data[mask]
         x = np.zeros(len(data)) + j + np.random.uniform(-jitter, jitter, len(data))
-        ax.scatter(x, data['carsFixed'], alpha=0.6, s=60, c=color, 
+        ax.scatter(x, data['carsFixed'], alpha=0.6, s=40, c=color, 
                    edgecolors='white', linewidth=0.5)
     
     # Calculate and show means
@@ -95,18 +96,18 @@ for i, shop in enumerate(range(1, 6)):
     delta = present_mean - away_mean
     
     # Draw mean lines
-    ax.hlines(away_mean, -0.3, 0.3, colors='#E67E22', linewidth=3, linestyle='-')
-    ax.hlines(present_mean, 0.7, 1.3, colors='#27AE60', linewidth=3, linestyle='-')
+    ax.hlines(away_mean, -0.3, 0.3, colors='#E67E22', linewidth=2, linestyle='-')
+    ax.hlines(present_mean, 0.7, 1.3, colors='#27AE60', linewidth=2, linestyle='-')
     
     # Draw delta arrow
     ax.annotate('', xy=(0.5, present_mean), xytext=(0.5, away_mean),
-                arrowprops=dict(arrowstyle='->', color='black', lw=2))
+                arrowprops=dict(arrowstyle='->', color='black', lw=1.5))
     
     # Add delta label
     delta_color = '#27AE60' if delta > 0 else '#E74C3C'
     delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
     mid_y = (away_mean + present_mean) / 2
-    ax.text(0.5, mid_y, f'Δ {delta_label}', ha='center', va='center', fontsize=11, 
+    ax.text(0.5, mid_y, f'Δ {delta_label}', ha='center', va='center', fontsize=9, 
             fontweight='bold', color='white',
             bbox=dict(boxstyle='round,pad=0.3', facecolor=delta_color, edgecolor='none', alpha=0.9))
     
@@ -115,26 +116,27 @@ for i, shop in enumerate(range(1, 6)):
     n_present = len(shop_data[shop_data['boss'] == 1])
     
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(['You Away', 'You Present'])
-    ax.set_ylabel('Cars Fixed', fontweight='bold')
-    ax.set_title(f'Shop {shop}', fontsize=14, fontweight='bold', color=shop_colors[i])
+    ax.set_xticklabels(['You Away', 'You Present'], fontsize=9)
+    ax.set_ylabel('Cars Fixed', fontweight='bold', fontsize=9)
+    ax.set_title(f'Shop {shop}', fontsize=12, fontweight='bold', color=shop_colors[i])
     ax.set_ylim(0, 75)
     ax.set_xlim(-0.5, 1.5)
     
     # Add sample size labels below x-axis labels
-    ax.text(0, -6, f'(n={n_away})', ha='center', fontsize=9, style='italic')
-    ax.text(1, -6, f'(n={n_present})', ha='center', fontsize=9, style='italic')
+    ax.text(0, -6, f'(n={n_away})', ha='center', fontsize=8, style='italic')
+    ax.text(1, -6, f'(n={n_present})', ha='center', fontsize=8, style='italic')
 
-# Add legend to the first subplot
+# Hide the 6th subplot and use it for legend
+axes[5].axis('off')
 from matplotlib.patches import Patch
 legend_elements = [Patch(facecolor='#E67E22', label='You Away'),
                    Patch(facecolor='#27AE60', label='You Present')]
-axes[0].legend(handles=legend_elements, loc='upper right', fontsize=10, title='Your Presence', 
-               title_fontsize=10, frameon=True)
+axes[5].legend(handles=legend_elements, loc='center', fontsize=11, title='Your Presence', 
+               title_fontsize=12, frameon=True)
 
-fig.suptitle('Daily Productivity Split by Shop: Boss Presence Delta', fontsize=16, fontweight='bold', y=0.995)
+fig.suptitle('Daily Productivity Split by Shop: Boss Presence Delta', fontsize=14, fontweight='bold', y=0.98)
 plt.tight_layout()
-plt.subplots_adjust(top=0.97)
+plt.subplots_adjust(top=0.92)
 plt.show()
 ```
 
@@ -557,8 +559,8 @@ What do these strategies look like over a full year? Here's how your profits com
 
 ```{python}
 #| fig-cap: "Cumulative extra profit projection over 12 months by scheduling strategy"
-#| fig-width: 8
-#| fig-height: 6
+#| fig-width: 7
+#| fig-height: 5
 
 # Calculate monthly extra profits for each strategy
 monthly_profits = {
@@ -572,7 +574,7 @@ monthly_profits = {
 months = np.arange(1, 13)
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-fig, ax = plt.subplots(figsize=(8, 6))
+fig, ax = plt.subplots(figsize=(7, 5))
 
 colors_line = {'Never Visit (Baseline)': '#E74C3C', 
                'Random Visits (Current)': '#F39C12',
@@ -674,345 +676,91 @@ Let's be honest about the limitations:
 ### One Final Chart: Boss Presence Delta by Shop
 
 ```{python}
-#| fig-cap: "Shop 1: Productivity split by boss presence"
-#| fig-width: 6
-#| fig-height: 5
+#| fig-cap: "All shops: Productivity split by boss presence"
+#| fig-width: 12
+#| fig-height: 8
 
 # Set font for these charts
 plt.rcParams['font.family'] = 'Georgia'
 
-shop = 1
-shop_color = '#E74C3C'
-shop_name = 'Shop 1'
+shop_colors = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
+shop_names = ['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5']
 
-fig, ax = plt.subplots(figsize=(6, 5))
-shop_data = carsDF[carsDF['shopID'] == shop]
+fig, axes = plt.subplots(2, 3, figsize=(12, 8))
+axes = axes.flatten()
 
-# Split by boss presence
-boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
-boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
+for idx, shop in enumerate(range(1, 6)):
+    ax = axes[idx]
+    shop_color = shop_colors[idx]
+    shop_name = shop_names[idx]
+    
+    shop_data = carsDF[carsDF['shopID'] == shop]
+    
+    # Split by boss presence
+    boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
+    boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
+    
+    # Calculate stats
+    away_mean = boss_away.mean()
+    present_mean = boss_present.mean()
+    delta = present_mean - away_mean
+    
+    # Create boxplot with individual points
+    positions = [0, 1]
+    bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
+                    patch_artist=True, showmeans=True,
+                    meanprops={'marker': 'D', 'markerfacecolor': 'white', 
+                               'markeredgecolor': 'black', 'markersize': 6})
+    
+    # Color the boxes
+    bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
+    bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
+    bp['boxes'][0].set_alpha(0.7)
+    bp['boxes'][1].set_alpha(0.7)
+    
+    # Add jittered scatter points
+    np.random.seed(42 + idx)
+    jitter = 0.1
+    ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
+               boss_away, alpha=0.4, s=20, c='#E67E22', edgecolors='white', linewidth=0.5)
+    ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
+               boss_present, alpha=0.4, s=20, c='#27AE60', edgecolors='white', linewidth=0.5)
+    
+    # Draw delta arrow between means
+    ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
+                arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
+    
+    # Add delta label
+    delta_color = '#27AE60' if delta > 0 else '#E74C3C'
+    delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
+    ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
+            ha='center', fontsize=10, fontweight='bold', color=delta_color,
+            bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
+    
+    # Labels and title
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(['Boss Away', 'Boss Present'], fontsize=9)
+    ax.set_ylabel('Cars Fixed', fontweight='bold', fontsize=9)
+    ax.set_title(f'{shop_name}', fontsize=12, fontweight='bold', color=shop_color)
+    ax.set_ylim(0, 75)
+    
+    # Add sample size labels
+    ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=8, style='italic')
+    ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=8, style='italic')
 
-# Calculate stats
-away_mean = boss_away.mean()
-present_mean = boss_present.mean()
-delta = present_mean - away_mean
+# Hide the 6th subplot (empty)
+axes[5].axis('off')
 
-# Create boxplot with individual points
-positions = [0, 1]
-bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
-                patch_artist=True, showmeans=True,
-                meanprops={'marker': 'D', 'markerfacecolor': 'white', 
-                           'markeredgecolor': 'black', 'markersize': 8})
+# Add a legend to the empty subplot area
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='#E67E22', alpha=0.7, edgecolor='black', label='Boss Away'),
+                   Patch(facecolor='#27AE60', alpha=0.7, edgecolor='black', label='Boss Present')]
+axes[5].legend(handles=legend_elements, loc='center', fontsize=11, title='Legend', title_fontsize=12)
+axes[5].text(0.5, 0.3, '◆ = Mean', ha='center', va='center', fontsize=10, transform=axes[5].transAxes)
 
-# Color the boxes
-bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
-bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
-bp['boxes'][0].set_alpha(0.7)
-bp['boxes'][1].set_alpha(0.7)
-
-# Add jittered scatter points
-np.random.seed(42)
-jitter = 0.1
-ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
-           boss_away, alpha=0.4, s=30, c='#E67E22', edgecolors='white', linewidth=0.5)
-ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
-           boss_present, alpha=0.4, s=30, c='#27AE60', edgecolors='white', linewidth=0.5)
-
-# Draw delta arrow between means
-ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-            arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
-
-# Add delta label
-delta_color = '#27AE60' if delta > 0 else '#E74C3C'
-delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
-ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
-        ha='center', fontsize=12, fontweight='bold', color=delta_color,
-        bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
-
-# Labels and title
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Boss Away', 'Boss Present'])
-ax.set_ylabel('Cars Fixed', fontweight='bold')
-ax.set_title(f'{shop_name}: Boss Presence Impact', fontsize=14, fontweight='bold', color=shop_color)
-ax.set_ylim(0, 75)
-
-# Add sample size labels
-ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=9, style='italic')
-ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=9, style='italic')
-
+fig.suptitle('Boss Presence Impact Across All Shops', fontsize=14, fontweight='bold', y=0.98)
 plt.tight_layout()
-plt.show()
-```
-
-```{python}
-#| fig-cap: "Shop 2: Productivity split by boss presence"
-#| fig-width: 6
-#| fig-height: 5
-
-shop = 2
-shop_color = '#3498DB'
-shop_name = 'Shop 2'
-
-fig, ax = plt.subplots(figsize=(6, 5))
-shop_data = carsDF[carsDF['shopID'] == shop]
-
-# Split by boss presence
-boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
-boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
-
-# Calculate stats
-away_mean = boss_away.mean()
-present_mean = boss_present.mean()
-delta = present_mean - away_mean
-
-# Create boxplot with individual points
-positions = [0, 1]
-bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
-                patch_artist=True, showmeans=True,
-                meanprops={'marker': 'D', 'markerfacecolor': 'white', 
-                           'markeredgecolor': 'black', 'markersize': 8})
-
-# Color the boxes
-bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
-bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
-bp['boxes'][0].set_alpha(0.7)
-bp['boxes'][1].set_alpha(0.7)
-
-# Add jittered scatter points
-np.random.seed(42)
-jitter = 0.1
-ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
-           boss_away, alpha=0.4, s=30, c='#E67E22', edgecolors='white', linewidth=0.5)
-ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
-           boss_present, alpha=0.4, s=30, c='#27AE60', edgecolors='white', linewidth=0.5)
-
-# Draw delta arrow between means
-ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-            arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
-
-# Add delta label
-delta_color = '#27AE60' if delta > 0 else '#E74C3C'
-delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
-ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
-        ha='center', fontsize=12, fontweight='bold', color=delta_color,
-        bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
-
-# Labels and title
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Boss Away', 'Boss Present'])
-ax.set_ylabel('Cars Fixed', fontweight='bold')
-ax.set_title(f'{shop_name}: Boss Presence Impact', fontsize=14, fontweight='bold', color=shop_color)
-ax.set_ylim(0, 75)
-
-# Add sample size labels
-ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=9, style='italic')
-ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=9, style='italic')
-
-plt.tight_layout()
-plt.show()
-```
-
-```{python}
-#| fig-cap: "Shop 3: Productivity split by boss presence"
-#| fig-width: 6
-#| fig-height: 5
-
-shop = 3
-shop_color = '#2ECC71'
-shop_name = 'Shop 3'
-
-fig, ax = plt.subplots(figsize=(6, 5))
-shop_data = carsDF[carsDF['shopID'] == shop]
-
-# Split by boss presence
-boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
-boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
-
-# Calculate stats
-away_mean = boss_away.mean()
-present_mean = boss_present.mean()
-delta = present_mean - away_mean
-
-# Create boxplot with individual points
-positions = [0, 1]
-bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
-                patch_artist=True, showmeans=True,
-                meanprops={'marker': 'D', 'markerfacecolor': 'white', 
-                           'markeredgecolor': 'black', 'markersize': 8})
-
-# Color the boxes
-bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
-bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
-bp['boxes'][0].set_alpha(0.7)
-bp['boxes'][1].set_alpha(0.7)
-
-# Add jittered scatter points
-np.random.seed(42)
-jitter = 0.1
-ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
-           boss_away, alpha=0.4, s=30, c='#E67E22', edgecolors='white', linewidth=0.5)
-ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
-           boss_present, alpha=0.4, s=30, c='#27AE60', edgecolors='white', linewidth=0.5)
-
-# Draw delta arrow between means
-ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-            arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
-
-# Add delta label
-delta_color = '#27AE60' if delta > 0 else '#E74C3C'
-delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
-ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
-        ha='center', fontsize=12, fontweight='bold', color=delta_color,
-        bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
-
-# Labels and title
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Boss Away', 'Boss Present'])
-ax.set_ylabel('Cars Fixed', fontweight='bold')
-ax.set_title(f'{shop_name}: Boss Presence Impact', fontsize=14, fontweight='bold', color=shop_color)
-ax.set_ylim(0, 75)
-
-# Add sample size labels
-ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=9, style='italic')
-ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=9, style='italic')
-
-plt.tight_layout()
-plt.show()
-```
-
-```{python}
-#| fig-cap: "Shop 4: Productivity split by boss presence"
-#| fig-width: 6
-#| fig-height: 5
-
-shop = 4
-shop_color = '#9B59B6'
-shop_name = 'Shop 4'
-
-fig, ax = plt.subplots(figsize=(6, 5))
-shop_data = carsDF[carsDF['shopID'] == shop]
-
-# Split by boss presence
-boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
-boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
-
-# Calculate stats
-away_mean = boss_away.mean()
-present_mean = boss_present.mean()
-delta = present_mean - away_mean
-
-# Create boxplot with individual points
-positions = [0, 1]
-bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
-                patch_artist=True, showmeans=True,
-                meanprops={'marker': 'D', 'markerfacecolor': 'white', 
-                           'markeredgecolor': 'black', 'markersize': 8})
-
-# Color the boxes
-bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
-bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
-bp['boxes'][0].set_alpha(0.7)
-bp['boxes'][1].set_alpha(0.7)
-
-# Add jittered scatter points
-np.random.seed(42)
-jitter = 0.1
-ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
-           boss_away, alpha=0.4, s=30, c='#E67E22', edgecolors='white', linewidth=0.5)
-ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
-           boss_present, alpha=0.4, s=30, c='#27AE60', edgecolors='white', linewidth=0.5)
-
-# Draw delta arrow between means
-ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-            arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
-
-# Add delta label
-delta_color = '#27AE60' if delta > 0 else '#E74C3C'
-delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
-ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
-        ha='center', fontsize=12, fontweight='bold', color=delta_color,
-        bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
-
-# Labels and title
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Boss Away', 'Boss Present'])
-ax.set_ylabel('Cars Fixed', fontweight='bold')
-ax.set_title(f'{shop_name}: Boss Presence Impact', fontsize=14, fontweight='bold', color=shop_color)
-ax.set_ylim(0, 75)
-
-# Add sample size labels
-ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=9, style='italic')
-ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=9, style='italic')
-
-plt.tight_layout()
-plt.show()
-```
-
-```{python}
-#| fig-cap: "Shop 5: Productivity split by boss presence"
-#| fig-width: 6
-#| fig-height: 5
-
-shop = 5
-shop_color = '#F39C12'
-shop_name = 'Shop 5'
-
-fig, ax = plt.subplots(figsize=(6, 5))
-shop_data = carsDF[carsDF['shopID'] == shop]
-
-# Split by boss presence
-boss_away = shop_data[shop_data['boss'] == 0]['carsFixed']
-boss_present = shop_data[shop_data['boss'] == 1]['carsFixed']
-
-# Calculate stats
-away_mean = boss_away.mean()
-present_mean = boss_present.mean()
-delta = present_mean - away_mean
-
-# Create boxplot with individual points
-positions = [0, 1]
-bp = ax.boxplot([boss_away, boss_present], positions=positions, widths=0.5,
-                patch_artist=True, showmeans=True,
-                meanprops={'marker': 'D', 'markerfacecolor': 'white', 
-                           'markeredgecolor': 'black', 'markersize': 8})
-
-# Color the boxes
-bp['boxes'][0].set_facecolor('#E67E22')  # Away - orange
-bp['boxes'][1].set_facecolor('#27AE60')  # Present - green
-bp['boxes'][0].set_alpha(0.7)
-bp['boxes'][1].set_alpha(0.7)
-
-# Add jittered scatter points
-np.random.seed(42)
-jitter = 0.1
-ax.scatter(np.zeros(len(boss_away)) + np.random.uniform(-jitter, jitter, len(boss_away)),
-           boss_away, alpha=0.4, s=30, c='#E67E22', edgecolors='white', linewidth=0.5)
-ax.scatter(np.ones(len(boss_present)) + np.random.uniform(-jitter, jitter, len(boss_present)),
-           boss_present, alpha=0.4, s=30, c='#27AE60', edgecolors='white', linewidth=0.5)
-
-# Draw delta arrow between means
-ax.annotate('', xy=(1, present_mean), xytext=(0, away_mean),
-            arrowprops=dict(arrowstyle='->', color='black', lw=1, ls='--'))
-
-# Add delta label
-delta_color = '#27AE60' if delta > 0 else '#E74C3C'
-delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
-ax.text(0.5, (away_mean + present_mean) / 2 + 3, f'Δ = {delta_label}',
-        ha='center', fontsize=12, fontweight='bold', color=delta_color,
-        bbox=dict(boxstyle='round', facecolor='white', edgecolor=delta_color, alpha=0.8))
-
-# Labels and title
-ax.set_xticks([0, 1])
-ax.set_xticklabels(['Boss Away', 'Boss Present'])
-ax.set_ylabel('Cars Fixed', fontweight='bold')
-ax.set_title(f'{shop_name}: Boss Presence Impact', fontsize=14, fontweight='bold', color=shop_color)
-ax.set_ylim(0, 75)
-
-# Add sample size labels
-ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=9, style='italic')
-ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=9, style='italic')
-
-plt.tight_layout()
+plt.subplots_adjust(top=0.92)
 plt.show()
 ```
 
