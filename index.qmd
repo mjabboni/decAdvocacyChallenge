@@ -557,7 +557,7 @@ What do these strategies look like over a full year? Here's how your profits com
 
 ```{python}
 #| fig-cap: "Cumulative extra profit projection over 12 months by scheduling strategy"
-#| fig-width: 10
+#| fig-width: 8
 #| fig-height: 6
 
 # Calculate monthly extra profits for each strategy
@@ -572,7 +572,7 @@ monthly_profits = {
 months = np.arange(1, 13)
 month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(8, 6))
 
 colors_line = {'Never Visit (Baseline)': '#E74C3C', 
                'Random Visits (Current)': '#F39C12',
