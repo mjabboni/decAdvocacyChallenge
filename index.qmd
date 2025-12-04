@@ -338,7 +338,7 @@ Here's the real question: **How many extra cars get fixed when you're at each sh
 
 ```{python}
 #| fig-cap: "The 'Boss Boost'—extra cars fixed when you're present vs. away"
-#| fig-width: 9
+#| fig-width: 7
 #| fig-height: 5
 
 # Calculate boost with confidence intervals
