@@ -516,7 +516,7 @@ scenarios = {
     'Optimal Strategy\n(Shop 1 & 4)': best_boost * 22 * profit_per_car
 }
 
-fig, ax = plt.subplots(figsize=(8, 7))
+fig, ax = plt.subplots(figsize=(7, 7))
 
 colors_scenario = ['#E74C3C', '#F39C12', '#3498DB', '#27AE60']
 bars = ax.bar(scenarios.keys(), scenarios.values(), 
