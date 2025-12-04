@@ -404,14 +404,14 @@ plt.show()
 ```{python}
 #| fig-cap: "Sample sizes and reliability of our estimates"
 #| fig-width: 6
-#| fig-height: 3
+#| fig-height: 6
 
 # Sample size breakdown
 sample_sizes = carsDF.groupby(['Shop', 'Boss Present']).size().unstack()
 
-fig, axes = plt.subplots(1, 2, figsize=(6, 3))
+fig, axes = plt.subplots(2, 1, figsize=(6, 6))
 
-# Left plot: Sample sizes
+# Top plot: Sample sizes
 ax1 = axes[0]
 x = np.arange(5)
 width = 0.35
@@ -437,7 +437,7 @@ for bar in bars2:
     ax1.annotate(f'{int(bar.get_height())}', xy=(bar.get_x() + bar.get_width()/2, bar.get_height()),
                  xytext=(0, 3), textcoords='offset points', ha='center', fontsize=9)
 
-# Right plot: Confidence ranges
+# Bottom plot: Confidence ranges
 ax2 = axes[1]
 for i, shop in enumerate(range(1, 6)):
     present = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed']
@@ -666,8 +666,8 @@ Let's be honest about the limitations:
 
 ```{python}
 #| fig-cap: "All shops: Productivity split by boss presence"
-#| fig-width: 12
-#| fig-height: 8
+#| fig-width: 6
+#| fig-height: 16
 
 # Set font for these charts
 plt.rcParams['font.family'] = 'Georgia'
@@ -675,8 +675,7 @@ plt.rcParams['font.family'] = 'Georgia'
 shop_colors = ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12']
 shop_names = ['Shop 1', 'Shop 2', 'Shop 3', 'Shop 4', 'Shop 5']
 
-fig, axes = plt.subplots(2, 3, figsize=(12, 8))
-axes = axes.flatten()
+fig, axes = plt.subplots(5, 1, figsize=(6, 16))
 
 for idx, shop in enumerate(range(1, 6)):
     ax = axes[idx]
@@ -737,17 +736,14 @@ for idx, shop in enumerate(range(1, 6)):
     ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=8, style='italic')
     ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=8, style='italic')
 
-# Hide the 6th subplot (empty)
-axes[5].axis('off')
-
-# Add a legend to the empty subplot area
+# Add a shared legend to the figure
 from matplotlib.patches import Patch
 legend_elements = [Patch(facecolor='#E67E22', alpha=0.7, edgecolor='black', label='Boss Away'),
-                   Patch(facecolor='#27AE60', alpha=0.7, edgecolor='black', label='Boss Present')]
-axes[5].legend(handles=legend_elements, loc='center', fontsize=11, title='Legend', title_fontsize=12)
-axes[5].text(0.5, 0.3, '◆ = Mean', ha='center', va='center', fontsize=10, transform=axes[5].transAxes)
+                   Patch(facecolor='#27AE60', alpha=0.7, edgecolor='black', label='Boss Present'),
+                   Patch(facecolor='white', edgecolor='black', label='◆ = Mean')]
+fig.legend(handles=legend_elements, loc='upper right', fontsize=10, bbox_to_anchor=(0.98, 0.99))
 
-fig.suptitle('Boss Presence Impact Across All Shops', fontsize=14, fontweight='bold', y=0.98)
+fig.suptitle('Boss Presence Impact Across All Shops', fontsize=14, fontweight='bold', y=1.0)
 plt.tight_layout()
 plt.subplots_adjust(top=0.92)
 plt.show()
