@@ -67,9 +67,9 @@ We analyzed 250 days of productivity data across your 5 shops. Here's every sing
 ```{python}
 #| fig-cap: "Each dot is one day. Green = you were there. Orange = you were away. Delta shows the difference in average cars fixed."
 #| fig-width: 6
-#| fig-height: 6
+#| fig-height: 8
 
-fig, ax = plt.subplots(figsize=(6, 6))
+fig, ax = plt.subplots(figsize=(6, 8))
 
 np.random.seed(42)
 jitter = 0.15
