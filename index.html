@@ -51,6 +51,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#the-bottom-line" id="toc-the-bottom-line" class="nav-link active" data-scroll-target="#the-bottom-line">The Bottom Line 🎯</a></li>
   <li><a href="#what-the-data-shows" id="toc-what-the-data-shows" class="nav-link" data-scroll-target="#what-the-data-shows">What the Data Shows</a></li>
+  <li><a href="#distribution-comparison-violin-plot" id="toc-distribution-comparison-violin-plot" class="nav-link" data-scroll-target="#distribution-comparison-violin-plot">Distribution Comparison: Violin Plot</a></li>
   <li><a href="#d-view-shop-performance-landscape" id="toc-d-view-shop-performance-landscape" class="nav-link" data-scroll-target="#d-view-shop-performance-landscape">3D View: Shop Performance Landscape</a></li>
   <li><a href="#the-boss-boost-effect" id="toc-the-boss-boost-effect" class="nav-link" data-scroll-target="#the-boss-boost-effect">The “Boss Boost” Effect</a></li>
   <li><a href="#how-confident-can-you-be" id="toc-how-confident-can-you-be" class="nav-link" data-scroll-target="#how-confident-can-you-be">How Confident Can You Be?</a></li>
@@ -103,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="what-the-data-shows" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-data-shows">What the Data Shows</h2>
 <p>We analyzed 250 days of productivity data across your 5 shops. Here’s every single day plotted—you can see the pattern clearly:</p>
-<div id="459a2d0a" class="cell" data-fig-height="20" data-fig-width="8" data-execution_count="2">
+<div id="7d391d1f" class="cell" data-fig-height="20" data-fig-width="8" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -116,14 +117,30 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>What you see:</strong> Each panel shows one shop, with data points split by your presence. The delta (Δ) shows how many more cars get fixed when you’re there. Shop 4 has the biggest delta (+12.6), while Shop 3 (your brother’s shop) shows the smallest improvement (+3.4). Notice how Shop 2’s high delta (+10.1) comes from just 5 data points—less reliable than the others.</p>
 <hr>
 </section>
-<section id="d-view-shop-performance-landscape" class="level2">
-<h2 class="anchored" data-anchor-id="d-view-shop-performance-landscape">3D View: Shop Performance Landscape</h2>
-<p>Here’s an interactive 3D perspective showing all three dimensions at once—Shop ID, your presence status, and cars fixed:</p>
-<div id="eb1b2ade" class="cell" data-fig-height="8" data-fig-width="10" data-execution_count="3">
+<section id="distribution-comparison-violin-plot" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-comparison-violin-plot">Distribution Comparison: Violin Plot</h2>
+<p>This violin plot reveals the full shape of productivity distributions—not just averages, but how spread out and consistent each shop performs:</p>
+<div id="d1706e97" class="cell" data-fig-height="6" data-fig-width="10" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-4-output-1.png" width="614" height="651" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="950" height="566" class="figure-img"></p>
+<figcaption>Violin plot showing productivity distributions by shop and boss presence</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Reading this chart:</strong> The “width” of each violin shows how common different productivity levels are. Notice how Shop 4’s “Boss Present” violin is not only higher but also narrower at the bottom—when you’re there, productivity is consistently high. Shop 3 shows the most overlap between orange and green, confirming your presence makes less difference there.</p>
+<hr>
+</section>
+<section id="d-view-shop-performance-landscape" class="level2">
+<h2 class="anchored" data-anchor-id="d-view-shop-performance-landscape">3D View: Shop Performance Landscape</h2>
+<p>Here’s an interactive 3D perspective showing all three dimensions at once—Shop ID, your presence status, and cars fixed:</p>
+<div id="9e5d363b" class="cell" data-fig-height="8" data-fig-width="10" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="614" height="651" class="figure-img"></p>
 <figcaption>3D visualization: Shop ID × Boss Presence × Cars Fixed</figcaption>
 </figure>
 </div>
@@ -135,11 +152,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="the-boss-boost-effect" class="level2">
 <h2 class="anchored" data-anchor-id="the-boss-boost-effect">The “Boss Boost” Effect</h2>
 <p>Here’s the real question: <strong>How many extra cars get fixed when you’re at each shop?</strong></p>
-<div id="f50d159c" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="4">
+<div id="e146b86c" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="854" height="470" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="854" height="470" class="figure-img"></p>
 <figcaption>The ‘Boss Boost’—extra cars fixed when you’re present vs.&nbsp;away</figcaption>
 </figure>
 </div>
@@ -192,11 +209,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="how-confident-can-you-be" class="level2">
 <h2 class="anchored" data-anchor-id="how-confident-can-you-be">How Confident Can You Be?</h2>
 <p><strong>The honest truth:</strong> We only have 250 days of data, and you weren’t at every shop equally. Here’s what that means:</p>
-<div id="8a2dbcee" class="cell" data-fig-height="3" data-fig-width="6" data-execution_count="5">
+<div id="7ce4777a" class="cell" data-fig-height="3" data-fig-width="6" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-6-output-1.png" width="566" height="277" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="566" height="277" class="figure-img"></p>
 <figcaption>Sample sizes and reliability of our estimates</figcaption>
 </figure>
 </div>
@@ -219,11 +236,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="the-money-question" class="level2">
 <h2 class="anchored" data-anchor-id="the-money-question">The Money Question 💰</h2>
 <p>Let’s say each car fixed earns you <strong>$200 in profit</strong>. Here’s what different scheduling strategies could mean for your wallet:</p>
-<div id="faeb3f2c" class="cell" data-fig-height="7" data-fig-width="9" data-execution_count="6">
+<div id="e8d6f580" class="cell" data-fig-height="7" data-fig-width="9" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-7-output-1.png" width="854" height="662" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-8-output-1.png" width="854" height="662" class="figure-img"></p>
 <figcaption>Extra monthly profit above baseline under different scheduling strategies</figcaption>
 </figure>
 </div>
@@ -232,11 +249,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="long-term-profit-projection" class="level3">
 <h3 class="anchored" data-anchor-id="long-term-profit-projection">Long-Term Profit Projection 📈</h3>
 <p>What do these strategies look like over a full year? Here’s how your profits compound:</p>
-<div id="f4c4e68c" class="cell" data-fig-height="6" data-fig-width="10" data-execution_count="7">
+<div id="e8833b52" class="cell" data-fig-height="6" data-fig-width="10" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-8-output-1.png" width="950" height="565" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-9-output-1.png" width="950" height="565" class="figure-img"></p>
 <figcaption>Cumulative extra profit projection over 12 months by scheduling strategy</figcaption>
 </figure>
 </div>
@@ -356,51 +373,51 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="one-final-chart-boss-presence-delta-by-shop" class="level3">
 <h3 class="anchored" data-anchor-id="one-final-chart-boss-presence-delta-by-shop">One Final Chart: Boss Presence Delta by Shop</h3>
-<div id="15747f11" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="8">
+<div id="f300b055" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="9">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-9-output-1.png" width="566" height="471" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-10-output-1.png" width="566" height="471" class="figure-img"></p>
 <figcaption>Shop 1: Productivity split by boss presence</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="dc73f78d" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="9">
+<div id="90a874b5" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="10">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-10-output-1.png" width="566" height="471" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-11-output-1.png" width="566" height="471" class="figure-img"></p>
 <figcaption>Shop 2: Productivity split by boss presence</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="eb393898" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="10">
+<div id="dfbc70ab" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-11-output-1.png" width="566" height="471" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-12-output-1.png" width="566" height="471" class="figure-img"></p>
 <figcaption>Shop 3: Productivity split by boss presence</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="2115407a" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="11">
+<div id="8a5580e7" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-12-output-1.png" width="566" height="471" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-13-output-1.png" width="566" height="471" class="figure-img"></p>
 <figcaption>Shop 4: Productivity split by boss presence</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="ce96bd5b" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="12">
+<div id="f606b0e8" class="cell" data-fig-height="5" data-fig-width="6" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-13-output-1.png" width="566" height="471" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-14-output-1.png" width="566" height="471" class="figure-img"></p>
 <figcaption>Shop 5: Productivity split by boss presence</figcaption>
 </figure>
 </div>

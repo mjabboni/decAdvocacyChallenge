@@ -142,6 +142,82 @@ plt.show()
 
 ---
 
+## Distribution Comparison: Violin Plot
+
+This violin plot reveals the full shape of productivity distributions—not just averages, but how spread out and consistent each shop performs:
+
+```{python}
+#| fig-cap: "Violin plot showing productivity distributions by shop and boss presence"
+#| fig-width: 10
+#| fig-height: 6
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Prepare data for violin plot
+shop_ids = sorted(carsDF['shopID'].unique())
+positions_away = np.arange(len(shop_ids)) * 2.5
+positions_present = positions_away + 0.8
+
+# Custom colors
+color_away = '#E67E22'
+color_present = '#27AE60'
+
+# Create violin data lists
+data_away = [carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 0)]['carsFixed'].values for shop in shop_ids]
+data_present = [carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed'].values for shop in shop_ids]
+
+# Plot violins for "Boss Away"
+vp_away = ax.violinplot(data_away, positions=positions_away, widths=0.7, showmeans=True, showmedians=False)
+for body in vp_away['bodies']:
+    body.set_facecolor(color_away)
+    body.set_edgecolor('black')
+    body.set_alpha(0.7)
+vp_away['cmeans'].set_color('black')
+vp_away['cmins'].set_color(color_away)
+vp_away['cmaxes'].set_color(color_away)
+vp_away['cbars'].set_color(color_away)
+
+# Plot violins for "Boss Present"
+vp_present = ax.violinplot(data_present, positions=positions_present, widths=0.7, showmeans=True, showmedians=False)
+for body in vp_present['bodies']:
+    body.set_facecolor(color_present)
+    body.set_edgecolor('black')
+    body.set_alpha(0.7)
+vp_present['cmeans'].set_color('black')
+vp_present['cmins'].set_color(color_present)
+vp_present['cmaxes'].set_color(color_present)
+vp_present['cbars'].set_color(color_present)
+
+# Add mean labels
+for i, shop in enumerate(shop_ids):
+    away_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 0)]['carsFixed'].mean()
+    present_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed'].mean()
+    ax.text(positions_away[i], away_mean + 4, f'{away_mean:.1f}', ha='center', fontsize=9, fontweight='bold', color=color_away)
+    ax.text(positions_present[i], present_mean + 4, f'{present_mean:.1f}', ha='center', fontsize=9, fontweight='bold', color=color_present)
+
+# Labels and styling
+ax.set_xticks(positions_away + 0.4)
+ax.set_xticklabels([f'Shop {s}' for s in shop_ids], fontsize=11, fontweight='bold')
+ax.set_ylabel('Cars Fixed', fontsize=12, fontweight='bold')
+ax.set_xlabel('')
+ax.set_title('Productivity Distributions: Shape Matters as Much as Averages', fontsize=14, fontweight='bold')
+ax.set_ylim(0, 80)
+
+# Legend
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor=color_away, edgecolor='black', alpha=0.7, label='Boss Away'),
+                   Patch(facecolor=color_present, edgecolor='black', alpha=0.7, label='Boss Present')]
+ax.legend(handles=legend_elements, loc='upper right', fontsize=10)
+
+ax.grid(axis='y', alpha=0.3, linestyle='--')
+plt.tight_layout()
+plt.show()
+```
+
+**Reading this chart:** The "width" of each violin shows how common different productivity levels are. Notice how Shop 4's "Boss Present" violin is not only higher but also narrower at the bottom—when you're there, productivity is consistently high. Shop 3 shows the most overlap between orange and green, confirming your presence makes less difference there.
+
+---
+
 ## 3D View: Shop Performance Landscape
 
 Here's an interactive 3D perspective showing all three dimensions at once—Shop ID, your presence status, and cars fixed:
