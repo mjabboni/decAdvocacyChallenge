@@ -218,6 +218,59 @@ plt.show()
 
 ---
 
+## Split Violin Plot: Direct Comparison by Shop
+
+This split violin plot shows the productivity distribution for each shop with boss presence on opposite sides—making it easy to compare the "shape" of performance directly:
+
+```{python}
+#| fig-cap: "Split violin plot: Each shop's productivity distribution split by boss presence (orange = away, green = present)"
+#| fig-width: 12
+#| fig-height: 6
+
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Create split violin plot using seaborn
+sns.violinplot(data=carsDF, x='Shop', y='carsFixed', hue='Boss Present',
+               split=True, inner='quart', palette={'You Away': '#E67E22', 'You Present': '#27AE60'},
+               ax=ax, linewidth=1)
+
+# Add mean markers for each group
+shop_ids = sorted(carsDF['shopID'].unique())
+for i, shop in enumerate(shop_ids):
+    away_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 0)]['carsFixed'].mean()
+    present_mean = carsDF[(carsDF['shopID'] == shop) & (carsDF['boss'] == 1)]['carsFixed'].mean()
+    delta = present_mean - away_mean
+    
+    # Plot mean markers
+    ax.scatter(i - 0.1, away_mean, color='#E67E22', s=80, marker='D', edgecolor='black', linewidth=1.5, zorder=5)
+    ax.scatter(i + 0.1, present_mean, color='#27AE60', s=80, marker='D', edgecolor='black', linewidth=1.5, zorder=5)
+    
+    # Add delta annotation above each shop
+    delta_color = '#27AE60' if delta > 0 else '#E74C3C'
+    delta_label = f'+{delta:.1f}' if delta > 0 else f'{delta:.1f}'
+    ax.text(i, 72, f'Δ {delta_label}', ha='center', fontsize=10, fontweight='bold', color=delta_color,
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor=delta_color, alpha=0.9))
+
+# Styling
+ax.set_xlabel('', fontsize=12)
+ax.set_ylabel('Cars Fixed', fontsize=12, fontweight='bold')
+ax.set_title('Split Violin: Productivity Distributions by Shop and Boss Presence', fontsize=14, fontweight='bold')
+ax.set_ylim(0, 80)
+ax.legend(title='Boss Presence', loc='upper left', fontsize=10, title_fontsize=11)
+ax.grid(axis='y', alpha=0.3, linestyle='--')
+
+# Add annotation explaining diamond markers
+ax.text(0.98, 0.02, '◆ = Mean', transform=ax.transAxes, fontsize=9, ha='right', va='bottom',
+        bbox=dict(boxstyle='round', facecolor='white', edgecolor='gray', alpha=0.8))
+
+plt.tight_layout()
+plt.show()
+```
+
+**What this shows:** The split violin gives you a direct side-by-side comparison within each shop. The left side (orange) shows the distribution when you're away; the right side (green) shows when you're present. The diamonds mark the mean values. Notice how Shop 4's green side extends much higher than its orange side—and the delta (+12.6) confirms this is where your presence has the most impact.
+
+---
+
 ## 3D View: Shop Performance Landscape
 
 Here's an interactive 3D perspective showing all three dimensions at once—Shop ID, your presence status, and cars fixed:
