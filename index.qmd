@@ -730,11 +730,11 @@ for idx, shop in enumerate(range(1, 6)):
     ax.set_xticklabels(['Boss Away', 'Boss Present'], fontsize=9)
     ax.set_ylabel('Cars Fixed', fontweight='bold', fontsize=9)
     ax.set_title(f'{shop_name}', fontsize=12, fontweight='bold', color=shop_color)
-    ax.set_ylim(0, 75)
+    ax.set_ylim(-10, 75)
     
     # Add sample size labels
-    ax.text(0, -5, f'n={len(boss_away)}', ha='center', fontsize=8, style='italic')
-    ax.text(1, -5, f'n={len(boss_present)}', ha='center', fontsize=8, style='italic')
+    ax.text(0, -12, f'n={len(boss_away)}', ha='center', fontsize=8, style='italic')
+    ax.text(1, -12, f'n={len(boss_present)}', ha='center', fontsize=8, style='italic')
 
 # Add a shared legend to the figure
 from matplotlib.patches import Patch
